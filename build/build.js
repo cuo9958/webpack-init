@@ -1,5 +1,7 @@
+process.env.NODE_ENV = 'production'
+
 var webpack = require('webpack');
-var config = require('./build/webpack.dev.conf');
+var config = require('./webpack.prod.conf');
 
 
 webpack(config, function (err, stats) {

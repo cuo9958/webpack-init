@@ -1,6 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
+var utils = require('./utils')
 var config = require('../config');
+var vueLoaderConfig = require('./vue-loader.conf');
 
 //简写目录地址
 function resolve(dir) {
@@ -33,6 +35,7 @@ module.exports = {
         extensions: ['.js', '.vue', '.json'],
         //注册别名
         alias: {
+            'vue$': 'vue/dist/vue.esm.js',
             '@': resolve('src')
         },
     },
@@ -41,16 +44,39 @@ module.exports = {
         //针对后缀名添加各种loader
         rules: [
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: "babel-loader",
+                test: /\.(js|vue)$/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                include: [resolve('src')],
+                options: {
+                    formatter: require('eslint-friendly-formatter')
+                }
             },
             {
-                test: /\.css$/,
-                use: [
-                    { loader: "style-loader" },
-                    { loader: "css-loader" },
-                ]
+                test: /\.vue$/,
+                loader: 'vue-loader',
+                options: vueLoaderConfig
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                include: [resolve('src')]
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('img/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+                }
             }
         ]
     },
